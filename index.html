@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RunMachine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+      color: #111;
+      background: #fff;
+    }
+
+    /* ── Desktop layout ── */
+
+    /* Left column — scrollable text, occupies left 50% */
+    .content {
+      width: 50%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 4rem;
+      background: #fff;
+    }
+
+    .section h2 {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: left;
+    }
+
+    /* Right column — fixed visual stage, right 50% of viewport */
+    .visual-stage {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100vh;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* All layers stacked absolutely, inset 10% from all edges */
+    /* Exclude images inside containers */
+    .visual-stage > img {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 80%;
+      object-fit: cover;
+      opacity: 0;
+      border-radius: 16px;
+      will-change: opacity, transform;
+    }
+
+    /* First image visible by default */
+    .visual-stage img:first-child {
+      opacity: 1;
+    }
+
+    /* Touch gesture indicator - positioned relative to the image area */
+    /* Images are at top: 10%, left: 10%, width: 80%, height: 80% */
+    /* So touch indicator is positioned within that image coordinate space */
+    .touch-indicator {
+      position: absolute;
+      /* Position relative to image: bottom 15% of image, centered horizontally */
+      /* Image spans from top 10% to top 90% (height 80%), so bottom of image is at 90% */
+      /* 15% up from bottom of image = 90% - (0.15 * 80%) = 90% - 12% = 78% from top of stage */
+      top: 78%;
+      /* Image spans from left 10% to left 90% (width 80%), slightly right of center */
+      left: 58%;
+      transform: translate(-50%, -50%) scale(0.5);
+      transform-origin: center center;
+      width: 60px;
+      height: 60px;
+      opacity: 0;
+      will-change: opacity, transform;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .touch-indicator img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Second touch indicator - positioned near emailsend area */
+    .touch-indicator-2 {
+      top: 25%;
+      left: 65%;
+    }
+
+    /* Third touch indicator - positioned for emailsend2 */
+    .touch-indicator-3 {
+      top: 68%;
+      left: 50%;
+    }
+
+    /* Clock container — holds clock_2 and clockarm, centered together */
+    /* Scaled to 100px, offset slightly right and up */
+    .clock-container {
+      position: absolute;
+      top: 25%;
+      left: 77%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      opacity: 0;
+      will-change: opacity;
+      pointer-events: none;
+    }
+
+    /* clock_2 fills the container */
+    .clock-container .clock-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      z-index: 1;
+    }
+
+    /* Clockarm rotation animation — 0.3 min = 18 seconds per full rotation */
+    @keyframes clockarm-rotate {
+      from { transform: translateX(-50%) rotate(0deg); }
+      to { transform: translateX(-50%) rotate(360deg); }
+    }
+
+    /* clockarm scaled proportionally: 6 * (100/158) ≈ 3.8px, height 100px */
+    .clock-container .clock-arm {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      transform-origin: center center;
+      width: 3.8px;
+      height: 100px;
+      object-fit: contain;
+      animation: clockarm-rotate 18s linear infinite;
+      z-index: 2;
+    }
+
+    /* ── Mobile layout: stacked ── */
+    @media (max-width: 768px) {
+      .content {
+        width: 100%;
+        margin-top: 40vh;
+      }
+
+      .visual-stage {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 40vh;
+        z-index: 10;
+      }
+
+      .section {
+        min-height: 60vh;
+        padding: 2rem;
+      }
+
+      .section h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left: Scrollable text sections -->
+  <div class="content" id="content">
+    <div class="section" data-index="0">
+      <h2>runMachine solves customer emails</h2>
+    </div>
+    <div class="section" data-index="1">
+      <h2>You forward all requests...</h2>
+    </div>
+    <div class="section" data-index="2">
+      <h2>the Machine searches your data, and within seconds...</h2>
+    </div>
+    <div class="section" data-index="3">
+      <h2>provides the answer, ready to send.</h2>
+    </div>
+    <div class="section" data-index="4">
+      <h2>Try the Machine now.</h2>
+    </div>
+  </div>
+
+  <!-- Right: Fixed image stage — layers stacked bottom to top -->
+  <div class="visual-stage" id="visual-stage">
+    <!-- Base layers -->
+    <img id="frame247"     src="assets/Frame%20247.png"     alt="Frame 247" />
+    <img id="frame248"     src="assets/Frame%20248.png"     alt="Frame 248" />
+    <!-- Overlay layers for Scene 2 -->
+    <img id="overlay"      src="assets/Frame%20overlay.png"   alt="Overlay" />
+    <img id="emailsend"    src="assets/Frame%20emailsend.png" alt="Email send" />
+    <!-- Scene 3: clock container (triggered fade-in) -->
+    <div id="clockContainer" class="clock-container">
+      <img class="clock-bg"  src="assets/Frame%20clock_2.png"   alt="Clock 2" />
+      <img class="clock-arm" src="assets/Frame%20clockarm.png"  alt="Clock arm" />
+    </div>
+    <!-- Touch gesture indicators -->
+    <div id="touchIndicator" class="touch-indicator">
+      <img src="assets/touch.png" alt="Touch gesture" />
+    </div>
+    <div id="touchIndicator2" class="touch-indicator touch-indicator-2">
+      <img src="assets/touch.png" alt="Touch gesture" />
+    </div>
+    <div id="touchIndicator3" class="touch-indicator touch-indicator-3">
+      <img src="assets/touch.png" alt="Touch gesture" />
+    </div>
+    <!-- Scene 4 base frame -->
+    <img id="frame250"     src="assets/Frame%20250.png"     alt="Frame 250" />
+    <!-- Scene 5: uses frame 247 as base, with overlay layers -->
+    <img id="overlay2"     src="assets/Frame%20overlay.png"     alt="Overlay 2" />
+    <img id="emailsend2"   src="assets/Frame%20emailsend_2.png" alt="Email send 2" />
+  </div>
+
+  <script>
+    (() => {
+      const sections = document.querySelectorAll('.section');
+
+      // Grab individual layers
+      const frame247   = document.getElementById('frame247');
+      const frame248   = document.getElementById('frame248');
+      const overlay    = document.getElementById('overlay');
+      const emailsend  = document.getElementById('emailsend');
+      const clockContainer = document.getElementById('clockContainer');
+      const touchIndicator = document.getElementById('touchIndicator');
+      const touchIndicator2 = document.getElementById('touchIndicator2');
+      const touchIndicator3 = document.getElementById('touchIndicator3');
+      const frame250   = document.getElementById('frame250');
+      const overlay2   = document.getElementById('overlay2');
+      const emailsend2 = document.getElementById('emailsend2');
+
+      // Track if clock animation has been triggered
+      let clockTriggered = false;
+
+      // Helper: clamp 0–1
+      function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+
+      // Helper: smoothstep
+      function smoothstep(v) { return v * v * (3 - 2 * v); }
+
+      // Helper: get how far a section has scrolled through the viewport
+      // Returns 0 when section top aligns with viewport top,
+      //         1 when section has fully scrolled out the top
+      function sectionProgress(section) {
+        const rect = section.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // progress = how far the section top has moved above viewport top,
+        // normalized by section height
+        return clamp01(-rect.top / rect.height);
+      }
+
+      // Helper: map a value from [inMin, inMax] to [0, 1]
+      function remap(value, inMin, inMax) {
+        return clamp01((value - inMin) / (inMax - inMin));
+      }
+
+      function updateScene() {
+        const s1progress = sectionProgress(sections[0]); // 0 = top, 1 = fully scrolled out
+
+        // ─── Scene 1 → Scene 2 transition ───
+        //
+        // Phase 1: s1progress 0 → 0.5 (Section 1 scrolls to 50% out)
+        //   Frame 247: opacity 1 → 0
+        //   Frame 248: opacity 0 → 1
+        //
+        // Phase 2: s1progress 0.5 → 1.0 (Section 1 finishes, Section 2 fully revealed)
+        //   Frame overlay:   opacity 0 → 1
+        //   Frame emailsend: opacity 1, translateY +30% → 0%
+
+        const phase1 = smoothstep(remap(s1progress, 0, 0.5));
+        const phase2 = smoothstep(remap(s1progress, 0.5, 1.0));
+
+        // Frame 247: visible at start, fades out during phase 1
+        frame247.style.opacity = 1 - phase1;
+
+        // Frame 248: fades in during phase 1, stays visible through phase 2
+        frame248.style.opacity = phase1;
+
+        // Touch indicator: appears when frame 248 starts appearing (s1progress > 0)
+        // Phase 1 (0 to 0.1): grows from 50% to 100% size
+        // Phase 2 (0.1 to 0.2): stays at full size
+        // Phase 3 (0.2 to 0.3): fades out while staying at full size
+        if (s1progress > 0 && s1progress < 0.3) {
+          // Calculate scale: grows from 0.5 to 1.0 during first 10%
+          const growProgress = remap(s1progress, 0, 0.1);
+          const scale = 0.5 + (0.5 * growProgress); // 0.5 → 1.0
+          
+          // Calculate opacity: full opacity until 0.2, then fades out
+          const fadeProgress = remap(s1progress, 0.2, 0.3);
+          const opacity = 1 - fadeProgress;
+          
+          touchIndicator.style.opacity = opacity;
+          touchIndicator.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        } else {
+          touchIndicator.style.opacity = 0;
+          touchIndicator.style.transform = 'translate(-50%, -50%) scale(0.5)';
+        }
+
+        // Overlay: fades in during phase 2
+        overlay.style.opacity = phase2;
+
+        // Emailsend: appears at start of phase 2, slides up
+        emailsend.style.opacity = phase2 > 0 ? 1 : 0;
+        const slideOffset = (1 - phase2) * 100; // 100% → 0% (slides in from fully off-screen bottom)
+        emailsend.style.transform = `translateY(${slideOffset}%)`;
+
+        // ─── Scene 2 → Scene 3 transition ───
+        //
+        // As Section 2 scrolls out (s2progress 0 → 1):
+        //   Frame 248: fades out
+        //   Overlay: fades out
+        //   Emailsend: waits until s2progress 0.5, then slides back down (translateY 0% → 100%)
+        //   Frame 247: fades back in as background
+        const s2progress = sectionProgress(sections[1]);
+        if (s2progress > 0) {
+          const exit = smoothstep(remap(s2progress, 0, 1.0));
+
+          // Frame 248 fades out
+          frame248.style.opacity = Math.min(parseFloat(frame248.style.opacity), 1 - exit);
+
+          // Overlay fades out
+          overlay.style.opacity = Math.min(parseFloat(overlay.style.opacity), 1 - exit);
+
+          // Emailsend slides back down - but only after s2progress reaches 0.5
+          // Remap s2progress from [0.5, 1.0] to [0, 1] for the slide animation
+          const emailSlideProgress = smoothstep(remap(s2progress, 0.5, 1.0));
+          const slideDown = emailSlideProgress * 100; // 0% → 100%
+          emailsend.style.transform = `translateY(${slideDown}%)`;
+          // Keep emailsend visible while sliding, hide once fully off-screen
+          if (emailSlideProgress >= 1) {
+            emailsend.style.opacity = 0;
+          }
+
+          // Frame 247 fades back in as background for Scene 3
+          frame247.style.opacity = Math.max(parseFloat(frame247.style.opacity), exit);
+
+          // Touch indicator 2: appears just before emailsend slides down
+          // Phase 1 (0.3 to 0.4): grows from 50% to 100% size
+          // Phase 2 (0.4 to 0.5): stays at full size
+          // Phase 3 (0.5 to 0.6): fades out as email starts sliding
+          if (s2progress > 0.3 && s2progress < 0.6) {
+            const touch2GrowProgress = remap(s2progress, 0.3, 0.4);
+            const touch2Scale = 0.5 + (0.5 * touch2GrowProgress);
+            
+            const touch2FadeProgress = remap(s2progress, 0.5, 0.6);
+            const touch2Opacity = 1 - touch2FadeProgress;
+            
+            touchIndicator2.style.opacity = touch2Opacity;
+            touchIndicator2.style.transform = `translate(-50%, -50%) scale(${touch2Scale})`;
+          } else {
+            touchIndicator2.style.opacity = 0;
+            touchIndicator2.style.transform = 'translate(-50%, -50%) scale(0.5)';
+          }
+        } else {
+          // Reset touch indicator 2 when not in s2progress range
+          touchIndicator2.style.opacity = 0;
+          touchIndicator2.style.transform = 'translate(-50%, -50%) scale(0.5)';
+        }
+
+        // ─── Scene 3: clock fade-in trigger ───
+        // When Section 2 is fully scrolled out (s2progress >= 1), 
+        // Section 3 is 100% revealed — trigger a 1000ms CSS fade-in for clock layers
+        const s3progress = sectionProgress(sections[2]);
+        
+        if (s2progress >= 1 && s3progress < 0.3 && !clockTriggered) {
+          clockTriggered = true;
+          // Fade in clock container (clock_2 + clockarm)
+          clockContainer.style.transition = 'opacity 1000ms ease';
+          clockContainer.style.opacity = 1;
+        }
+        
+        // Hide clock container when leaving Scene 3
+        if (s3progress > 0.5) {
+          clockContainer.style.transition = 'opacity 300ms ease';
+          clockContainer.style.opacity = 0;
+          clockTriggered = false; // Reset for re-entry
+        }
+        
+        // Also reset clock if scrolling back before Scene 3
+        if (s2progress < 1) {
+          clockContainer.style.opacity = 0;
+          clockTriggered = false;
+        }
+
+        // ─── Scene 4: simple crossfade for frame250 ───
+        const vh = window.innerHeight;
+        const s4rect = sections[3].getBoundingClientRect();
+        const s4center = s4rect.top + s4rect.height / 2;
+        const viewportCenter = vh / 2;
+        const s4distance = Math.abs(s4center - viewportCenter);
+        const s4maxDistance = vh / 2 + s4rect.height / 2;
+        let s4opacity = 1 - (s4distance / s4maxDistance);
+        s4opacity = Math.max(0, Math.min(1, s4opacity));
+        s4opacity = smoothstep(s4opacity);
+        frame250.style.opacity = s4opacity;
+
+        // ─── Scene 5: Same transition as Scene 2 ───
+        // Frame 247 stays as background (already visible from Scene 3)
+        // Overlay2 fades in, emailsend2 slides up from bottom
+        const s4progress = sectionProgress(sections[3]);
+        
+        // Phase 1: s4progress 0.5 → 1.0 (Section 4 scrolls out, Section 5 revealed)
+        //   Frame 250: fades out (handled above by crossfade)
+        //   Frame 247: stays visible as background
+        // Phase 2: s4progress 0.5 → 1.0
+        //   Overlay2: fades in
+        //   Emailsend2: slides up from bottom
+        
+        const s5phase = smoothstep(remap(s4progress, 0.5, 1.0));
+
+        // Touch indicator 3: appears just before emailsend2 slides up
+        // Phase 1 (0.2 to 0.3): grows from 50% to 100% size
+        // Phase 2 (0.3 to 0.4): stays at full size
+        // Phase 3 (0.4 to 0.5): fades out as email starts sliding up
+        if (s4progress > 0.2 && s4progress < 0.5) {
+          const touch3GrowProgress = remap(s4progress, 0.2, 0.3);
+          const touch3Scale = 0.5 + (0.5 * touch3GrowProgress);
+          
+          const touch3FadeProgress = remap(s4progress, 0.4, 0.5);
+          const touch3Opacity = 1 - touch3FadeProgress;
+          
+          touchIndicator3.style.opacity = touch3Opacity;
+          touchIndicator3.style.transform = `translate(-50%, -50%) scale(${touch3Scale})`;
+        } else {
+          touchIndicator3.style.opacity = 0;
+          touchIndicator3.style.transform = 'translate(-50%, -50%) scale(0.5)';
+        }
+        
+        // Overlay2: fades in during phase
+        overlay2.style.opacity = s5phase;
+        
+        // Emailsend2: slides up from 100% offset to 0%
+        emailsend2.style.opacity = s5phase > 0 ? 1 : 0;
+        const s5slideOffset = (1 - s5phase) * 100;
+        emailsend2.style.transform = `translateY(${s5slideOffset}%)`;
+
+        // Ensure frame247 stays visible for Scene 5
+        if (s4progress > 0.5) {
+          frame247.style.opacity = 1;
+        }
+      }
+
+      // Throttle with rAF
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            updateScene();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+
+      // Initial state
+      updateScene();
+    })();
+  </script>
+
+</body>
+</html>
