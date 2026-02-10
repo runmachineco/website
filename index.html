@@ -40,12 +40,91 @@
       background: #fff;
     }
 
+    .section[data-index="0"] {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
     .section h2 {
       font-family: 'Averia Serif Libre', serif;
       font-size: 3rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       text-align: left;
+    }
+
+    /* Inline logo rotator after "data" — one visible img inline, no extra box */
+    .inline-logos {
+      display: inline;
+    }
+    .inline-logos img {
+      display: none;
+      vertical-align: -0.20em;
+      height: 1em;
+      width: auto;
+      max-width: 1em;
+    }
+    .inline-logos img.active {
+      display: inline;
+    }
+    .inline-logos img.active {
+      opacity: 1;
+    }
+
+    /* Hero tagline below heading */
+    .hero-tagline {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 1rem;
+      margin-top: 1rem;
+      color: #111;
+    }
+
+    /* Hero CTA: input + buttons below first heading */
+    .hero-cta {
+      display: flex;
+      align-items: stretch;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-cta .input-group {
+      display: flex;
+      align-items: stretch;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #000;
+    }
+    .hero-cta input {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: #fff;
+      color: #111;
+      min-width: 220px;
+      border-radius: 0;
+    }
+    .hero-cta input::placeholder {
+      color: #777;
+    }
+    .hero-cta .btn {
+      font-family: 'Averia Serif Libre', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      background: #000;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .hero-cta .btn-inline {
+      border-radius: 0;
+    }
+    .hero-cta .btn-standalone {
+      border-radius: 12px;
     }
 
     /* Right column — fixed visual stage, right 50% of viewport */
@@ -57,6 +136,7 @@
       height: 100vh;
       overflow: hidden;
       background: #fff;
+      will-change: transform, opacity;
     }
 
     /* All layers stacked absolutely, inset 10% from all edges */
@@ -71,10 +151,16 @@
       opacity: 0;
       border-radius: 16px;
       will-change: opacity, transform;
+      z-index: 2;
     }
 
-    /* First image visible by default */
-    .visual-stage img:first-child {
+    /* Constant background layer — always visible behind all scenes */
+    .visual-stage > img.frame-background {
+      opacity: 1;
+      z-index: 0;
+    }
+    /* First scene image visible by default */
+    .visual-stage #frame247 {
       opacity: 1;
     }
 
@@ -117,8 +203,7 @@
       left: 50%;
     }
 
-    /* Clock container — holds clock_2 and clockarm, centered together */
-    /* Scaled to 100px, offset slightly right and up */
+    /* Clock container — COMMENTED OUT (might bring back later)
     .clock-container {
       position: absolute;
       top: 25%;
@@ -129,9 +214,8 @@
       opacity: 0;
       will-change: opacity;
       pointer-events: none;
+      z-index: 10;
     }
-
-    /* clock_2 fills the container */
     .clock-container .clock-bg {
       position: absolute;
       top: 0;
@@ -141,14 +225,10 @@
       object-fit: contain;
       z-index: 1;
     }
-
-    /* Clockarm rotation animation — 0.3 min = 18 seconds per full rotation */
     @keyframes clockarm-rotate {
       from { transform: translateX(-50%) rotate(0deg); }
       to { transform: translateX(-50%) rotate(360deg); }
     }
-
-    /* clockarm scaled proportionally: 6 * (100/158) ≈ 3.8px, height 100px */
     .clock-container .clock-arm {
       position: absolute;
       top: 0;
@@ -160,6 +240,139 @@
       object-fit: contain;
       animation: clockarm-rotate 18s linear infinite;
       z-index: 2;
+    }
+    */
+
+    /* Logos carousel wrapper: 50% shorter, two halves that meet in center */
+    .logos-carousel-container {
+      position: absolute;
+      top: 48%;
+      left: 10%;
+      width: 80%;
+      height: 40%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      will-change: opacity;
+      z-index: 1;
+    }
+
+    /* Left half: left-bound, strip scrolls right (content moves toward center) */
+    .logos-carousel-left {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 100%);
+      mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 100%);
+    }
+
+    /* Right half: strip extends right, scrolls left (content moves toward center) */
+    .logos-carousel-right {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 100%);
+      mask-image: linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 100%);
+    }
+
+    .logos-strip {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-shrink: 0;
+      animation-play-state: paused;
+    }
+
+    .logos-strip img {
+      height: 24px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.9;
+    }
+
+    .logos-strip-right {
+      animation: logos-scroll-right 22s linear infinite;
+    }
+
+    .logos-strip-left {
+      animation: logos-scroll-left 22s linear infinite;
+    }
+
+    /* Right strip: starts at 0, moves left by one set (25%), then resets seamlessly */
+    @keyframes logos-scroll-right {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-25%); }
+    }
+
+    /* Left strip: starts shifted left by one set (-25%), moves to 0, then resets seamlessly */
+    @keyframes logos-scroll-left {
+      0% { transform: translateX(-25%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* ── Full-width section after split ── */
+    .full-width-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 4rem;
+      z-index: 0;
+    }
+
+    .full-width-section h2 {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 252px;
+    }
+
+    .feature-card h3 {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: #111;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #666;
+      margin-top: auto;
     }
 
     /* ── Mobile layout: stacked ── */
@@ -187,6 +400,40 @@
       .section h2 {
         font-size: 2rem;
       }
+
+      .full-width-section {
+        padding: 3rem 1.5rem;
+      }
+
+      .full-width-section h2 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .feature-cards {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .feature-card {
+        min-height: auto;
+        padding: 1.5rem;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        margin-top: 1.25rem;
+      }
+      .hero-cta .input-group {
+        width: 100%;
+      }
+      .hero-cta input {
+        flex: 1;
+        min-width: 0;
+      }
+      .hero-cta .btn-standalone {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -195,34 +442,127 @@
   <!-- Left: Scrollable text sections -->
   <div class="content" id="content">
     <div class="section" data-index="0">
-      <h2>runMachine solves customer emails</h2>
+      <h2>B2B Customer Support, solved.</h2>
+      <p class="hero-tagline">Instant replies instead of endless search,<br>to answer any customer request in detail.</p>
+      <div class="hero-cta">
+        <div class="input-group">
+          <input type="email" placeholder="What's your work email?" aria-label="Work email" />
+          <button type="button" class="btn btn-inline">Book a demo</button>
+        </div>
+        <button type="button" class="btn btn-standalone">Start for free</button>
+      </div>
     </div>
     <div class="section" data-index="1">
-      <h2>You forward all requests...</h2>
+      <h2>You forward any request...</h2>
     </div>
     <div class="section" data-index="2">
-      <h2>the Machine searches your data, and within seconds...</h2>
+      <h2>...the Machine searches your data <span class="inline-logos" id="inlineLogos" aria-hidden="true"><img src="assets/logos/image%20258.png" alt="" /><img src="assets/logos/image%20259.png" alt="" /><img src="assets/logos/image%20260.png" alt="" /><img src="assets/logos/image%20261.png" alt="" /><img src="assets/logos/image%20262.png" alt="" /><img src="assets/logos/image%20263.png" alt="" /></span> and within seconds...</h2>
     </div>
     <div class="section" data-index="3">
-      <h2>provides the answer, ready to send.</h2>
+      <h2>...provides the answer, ready to send.</h2>
     </div>
     <div class="section" data-index="4">
-      <h2>Try the Machine now.</h2>
+      <h2>Try runMachine now.</h2>
+    </div>
+  </div>
+
+  <!-- Full-width section that appears after both columns scroll out -->
+  <div class="full-width-section" id="fullWidthSection">
+    <h2>Get to know runMachine</h2>
+    <div class="feature-cards">
+      <div class="feature-card">
+        <h3>AI built into every channel</h3>
+        <p>Support customers across Slack, Gmail, Outlook, Microsoft Teams, and more.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Agents equipped with every skill</h3>
+        <p>Finds the facts, logs and data to answer any request. Reproduces bugs on the fly.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Workflows for any task</h3>
+        <p>Your machine can handle customer questions, create tickets and propose solutions.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Understand your customers</h3>
+        <p>Collect all customer requests and ask the machine what is relevant.</p>
+      </div>
     </div>
   </div>
 
   <!-- Right: Fixed image stage — layers stacked bottom to top -->
   <div class="visual-stage" id="visual-stage">
+    <!-- Constant background (always visible behind all scenes) -->
+    <img class="frame-background" src="assets/Frame%20background.png" alt="Frame background" />
     <!-- Base layers -->
     <img id="frame247"     src="assets/Frame%20247.png"     alt="Frame 247" />
     <img id="frame248"     src="assets/Frame%20248.png"     alt="Frame 248" />
     <!-- Overlay layers for Scene 2 -->
     <img id="overlay"      src="assets/Frame%20overlay.png"   alt="Overlay" />
     <img id="emailsend"    src="assets/Frame%20emailsend.png" alt="Email send" />
-    <!-- Scene 3: clock container (triggered fade-in) -->
+    <!-- Scene 3: clock container — COMMENTED OUT (might bring back later)
     <div id="clockContainer" class="clock-container">
       <img class="clock-bg"  src="assets/Frame%20clock_2.png"   alt="Clock 2" />
       <img class="clock-arm" src="assets/Frame%20clockarm.png"  alt="Clock arm" />
+    </div>
+    -->
+    <!-- Logos: two carousels meeting in center (left-bound scrolls right, right-bound scrolls left) -->
+    <div id="logosCarousel" class="logos-carousel-container">
+      <div class="logos-carousel-left">
+        <div id="logosStripLeft" class="logos-strip logos-strip-left">
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+        </div>
+      </div>
+      <div class="logos-carousel-right">
+        <div id="logosStripRight" class="logos-strip logos-strip-right">
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos/image%20258.png" alt="Logo" />
+          <img src="assets/logos/image%20259.png" alt="Logo" />
+          <img src="assets/logos/image%20260.png" alt="Logo" />
+          <img src="assets/logos/image%20261.png" alt="Logo" />
+          <img src="assets/logos/image%20262.png" alt="Logo" />
+          <img src="assets/logos/image%20263.png" alt="Logo" />
+        </div>
+      </div>
     </div>
     <!-- Touch gesture indicators -->
     <div id="touchIndicator" class="touch-indicator">
@@ -245,12 +585,30 @@
     (() => {
       const sections = document.querySelectorAll('.section');
 
+      // Inline logo rotator: 2 logos per second (500ms each)
+      const inlineLogosEl = document.getElementById('inlineLogos');
+      if (inlineLogosEl) {
+        const logos = inlineLogosEl.querySelectorAll('img');
+        let idx = 0;
+        if (logos.length) logos[0].classList.add('active');
+        setInterval(() => {
+          if (logos.length) {
+            logos[idx].classList.remove('active');
+            idx = (idx + 1) % logos.length;
+            logos[idx].classList.add('active');
+          }
+        }, 500);
+      }
+
       // Grab individual layers
       const frame247   = document.getElementById('frame247');
       const frame248   = document.getElementById('frame248');
       const overlay    = document.getElementById('overlay');
       const emailsend  = document.getElementById('emailsend');
-      const clockContainer = document.getElementById('clockContainer');
+      // const clockContainer = document.getElementById('clockContainer'); // clock commented out
+      const logosCarousel = document.getElementById('logosCarousel');
+      const logosStripLeft = document.getElementById('logosStripLeft');
+      const logosStripRight = document.getElementById('logosStripRight');
       const touchIndicator = document.getElementById('touchIndicator');
       const touchIndicator2 = document.getElementById('touchIndicator2');
       const touchIndicator3 = document.getElementById('touchIndicator3');
@@ -258,7 +616,7 @@
       const overlay2   = document.getElementById('overlay2');
       const emailsend2 = document.getElementById('emailsend2');
 
-      // Track if clock animation has been triggered
+      // Track if clock/logos animation has been triggered (clock commented out)
       let clockTriggered = false;
 
       // Helper: clamp 0–1
@@ -386,28 +744,42 @@
           touchIndicator2.style.transform = 'translate(-50%, -50%) scale(0.5)';
         }
 
-        // ─── Scene 3: clock fade-in trigger ───
-        // When Section 2 is fully scrolled out (s2progress >= 1), 
-        // Section 3 is 100% revealed — trigger a 1000ms CSS fade-in for clock layers
+        // ─── Scene 3: logos fade-in trigger (clock commented out) ───
         const s3progress = sectionProgress(sections[2]);
         
         if (s2progress >= 1 && s3progress < 0.3 && !clockTriggered) {
           clockTriggered = true;
-          // Fade in clock container (clock_2 + clockarm)
-          clockContainer.style.transition = 'opacity 1000ms ease';
-          clockContainer.style.opacity = 1;
+          // clockContainer.style.transition = 'opacity 1000ms ease';
+          // clockContainer.style.opacity = 1;
+          if (logosCarousel) {
+            logosCarousel.style.transition = 'opacity 1000ms ease';
+            logosCarousel.style.opacity = 1;
+          }
+          if (logosStripLeft) logosStripLeft.style.animationPlayState = 'running';
+          if (logosStripRight) logosStripRight.style.animationPlayState = 'running';
         }
         
-        // Hide clock container when leaving Scene 3
+        // Hide when leaving Scene 3
         if (s3progress > 0.5) {
-          clockContainer.style.transition = 'opacity 300ms ease';
-          clockContainer.style.opacity = 0;
-          clockTriggered = false; // Reset for re-entry
+          // clockContainer.style.transition = 'opacity 300ms ease';
+          // clockContainer.style.opacity = 0;
+          if (logosCarousel) {
+            logosCarousel.style.transition = 'opacity 300ms ease';
+            logosCarousel.style.opacity = 0;
+          }
+          if (logosStripLeft) logosStripLeft.style.animationPlayState = 'paused';
+          if (logosStripRight) logosStripRight.style.animationPlayState = 'paused';
+          clockTriggered = false;
         }
         
-        // Also reset clock if scrolling back before Scene 3
+        // Reset if scrolling back before Scene 3
         if (s2progress < 1) {
-          clockContainer.style.opacity = 0;
+          // clockContainer.style.opacity = 0;
+          if (logosCarousel) {
+            logosCarousel.style.opacity = 0;
+          }
+          if (logosStripLeft) logosStripLeft.style.animationPlayState = 'paused';
+          if (logosStripRight) logosStripRight.style.animationPlayState = 'paused';
           clockTriggered = false;
         }
 
@@ -466,6 +838,30 @@
         // Ensure frame247 stays visible for Scene 5
         if (s4progress > 0.5) {
           frame247.style.opacity = 1;
+        }
+
+        // ─── Scroll-out transition for both columns ───
+        // When Section 5 (last section) starts scrolling out, both columns scroll up
+        const s5progress = sectionProgress(sections[4]);
+        const visualStage = document.getElementById('visual-stage');
+        const content = document.getElementById('content');
+        
+        if (s5progress > 0) {
+          // Both columns scroll up together
+          const scrollOutAmount = s5progress * 100; // 0 to 100vh
+          visualStage.style.transform = `translateY(-${scrollOutAmount}vh)`;
+          visualStage.style.opacity = 1 - (s5progress * 0.3); // Slight fade
+          
+          // Fade out email overlay elements as we scroll out
+          if (s5progress > 0.5) {
+            const fadeOut = (s5progress - 0.5) * 2; // 0 to 1 during second half
+            overlay2.style.opacity = Math.max(0, 1 - fadeOut);
+            emailsend2.style.opacity = Math.max(0, 1 - fadeOut);
+          }
+        } else {
+          // Reset when scrolling back up
+          visualStage.style.transform = 'translateY(0)';
+          visualStage.style.opacity = 1;
         }
       }
 
