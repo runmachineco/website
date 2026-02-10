@@ -368,11 +368,85 @@
       color: #111;
     }
 
-    .feature-card p {
-      font-size: 0.9rem;
+      .feature-card p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #666;
+        margin-top: auto;
+      }
+
+    /* ── Three Ways Section ── */
+    .three-ways-section {
+      position: relative;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6rem 4rem;
+      z-index: 0;
+    }
+
+    .three-ways-section h2 {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .three-ways-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .three-ways-row {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .three-ways-row .grey-box {
+      flex-shrink: 0;
+      width: 40vw;
+      height: 80vh;
+      max-width: 600px;
+      max-height: 700px;
+      background: #f5f5f5;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .three-ways-row .grey-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+
+    .three-ways-row .row-content {
+      flex: 1;
+    }
+
+    .three-ways-row .row-content h3 {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 0.5rem;
+    }
+
+    .three-ways-row .row-content p {
+      font-size: 1rem;
       line-height: 1.5;
       color: #666;
-      margin-top: auto;
     }
 
     /* ── Mobile layout: stacked ── */
@@ -418,6 +492,34 @@
       .feature-card {
         min-height: auto;
         padding: 1.5rem;
+      }
+
+      .three-ways-section {
+        padding: 3rem 1.5rem;
+      }
+
+      .three-ways-section h2 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .three-ways-row {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .three-ways-row .grey-box {
+        width: 100%;
+        height: 60vh;
+        max-height: 400px;
+      }
+
+      .three-ways-row .row-content h3 {
+        font-size: 1.1rem;
+      }
+
+      .three-ways-row .row-content p {
+        font-size: 0.9rem;
       }
 
       .hero-cta {
@@ -485,6 +587,40 @@
       <div class="feature-card">
         <h3>Understand your customers</h3>
         <p>Collect all customer requests and ask the machine what is relevant.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three Ways Section -->
+  <div class="three-ways-section" id="threeWaysSection">
+    <h2>Three ways we save you both time.</h2>
+    <div class="three-ways-container">
+      <div class="three-ways-row">
+        <div class="grey-box">
+          <!-- Image placeholder for Gmail, Teams, etc. -->
+        </div>
+        <div class="row-content">
+          <h3>AI built into every channel</h3>
+          <p>Meet customers where they are—Slack, Gmail, Teams, and beyond.</p>
+        </div>
+      </div>
+      <div class="three-ways-row">
+        <div class="grey-box">
+          <!-- Image placeholder -->
+        </div>
+        <div class="row-content">
+          <h3>Workflows for any task</h3>
+          <p>From questions to tickets to solutions—automated end-to-end.</p>
+        </div>
+      </div>
+      <div class="three-ways-row">
+        <div class="grey-box">
+          <!-- Image placeholder -->
+        </div>
+        <div class="row-content">
+          <h3>Understand your customers</h3>
+          <p>Turn every request into insight. Ask the machine what matters.</p>
+        </div>
       </div>
     </div>
   </div>
