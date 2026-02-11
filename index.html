@@ -74,10 +74,11 @@
 
     /* Hero tagline below heading */
     .hero-tagline {
-      font-family: 'Averia Serif Libre', serif;
-      font-size: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.5;
       margin-top: 1rem;
-      color: #111;
+      color: #666;
     }
 
     /* Hero CTA: input + buttons below first heading */
@@ -319,6 +320,94 @@
       100% { transform: translateX(0); }
     }
 
+    /* ── Problem section (Section 2) ── */
+    .problem-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 4rem;
+      z-index: 0;
+    }
+
+    .problem-section .problem-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #DA8853;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #DA8853;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .problem-section .problem-heading {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 2.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: #111;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .problem-section .problem-subhead {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #666;
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 4rem;
+    }
+
+    .problem-stats {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .problem-stat {
+      flex: 1;
+      min-width: 220px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .problem-stat-value {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 2.75rem;
+      font-weight: 700;
+      color: #DA8853;
+      margin-bottom: 0.5rem;
+    }
+
+    .problem-stat-desc {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #666;
+    }
+
     /* ── Full-width section after split ── */
     .full-width-section {
       position: relative;
@@ -412,16 +501,17 @@
 
     .three-ways-row .grey-box {
       flex-shrink: 0;
-      width: 40vw;
-      height: 80vh;
-      max-width: 600px;
-      max-height: 700px;
+      /* Square 700×700; width chosen so height never exceeds 80vh */
+      width: min(40vw, 700px, 80vh);
+      aspect-ratio: 1 / 1;
+      height: auto;
       background: #f5f5f5;
       border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      position: relative;
     }
 
     .three-ways-row .grey-box img {
@@ -429,6 +519,72 @@
       height: 100%;
       object-fit: cover;
       border-radius: 16px;
+    }
+
+    .three-ways-row .grey-box .section-static-img {
+      object-fit: contain;
+    }
+
+    /* First bracket: rotating Gmail / Teams / Slack slideshow (clipped to grey frame) */
+    .three-ways-row .grey-box .section-slideshow {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .three-ways-row .grey-box .section-slideshow img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 0;
+      pointer-events: none;
+    }
+
+    /* Slide: enter from right → hold ~2s → exit to bottom. Cycle 9s, each slide active 3s. */
+    @keyframes section-slide-cycle {
+      0% {
+        transform: translateX(100%) translateY(0);
+        opacity: 1;
+      }
+      5.5% {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+      }
+      27.8% {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+      }
+      33.33% {
+        transform: translateX(0) translateY(100%);
+        opacity: 1;
+      }
+      33.34% {
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0) translateY(100%);
+        opacity: 0;
+      }
+    }
+
+    .three-ways-row .grey-box .section-slideshow .slide-img {
+      animation: section-slide-cycle 9s ease-in-out infinite;
+    }
+
+    .three-ways-row .grey-box .section-slideshow .slide-img:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .three-ways-row .grey-box .section-slideshow .slide-img:nth-child(2) {
+      animation-delay: 3s;
+    }
+
+    .three-ways-row .grey-box .section-slideshow .slide-img:nth-child(3) {
+      animation-delay: 6s;
     }
 
     .three-ways-row .row-content {
@@ -447,6 +603,133 @@
       font-size: 1rem;
       line-height: 1.5;
       color: #666;
+    }
+
+    /* ── Pricing section ── */
+    .pricing-section {
+      width: 100%;
+      background: #fff;
+      color: #111;
+      padding: 6rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pricing-section h2 {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 0.75rem;
+      color: #111;
+    }
+
+    .pricing-section .pricing-subtitle {
+      font-size: 0.95rem;
+      color: #666;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .pricing-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .pricing-card-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .pricing-card h3 {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-card .pricing-desc {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #666;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    .pricing-card .pricing-amount {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 1.5rem;
+    }
+
+    .pricing-card .pricing-amount .period {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #666;
+    }
+
+    .pricing-card .btn-pricing {
+      display: inline-block;
+      font-family: 'Averia Serif Libre', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      width: 100%;
+      text-align: center;
+      border: 1px solid #111;
+      background: transparent;
+      color: #111;
+    }
+
+    .pricing-card .btn-pricing.btn-primary {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .pricing-card .pricing-footer-link {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #666;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .pricing-card .pricing-footer-link:hover {
+      color: #111;
     }
 
     /* ── Mobile layout: stacked ── */
@@ -484,6 +767,33 @@
         margin-bottom: 2rem;
       }
 
+      .problem-section {
+        padding: 4rem 1.5rem;
+      }
+
+      .problem-section .problem-heading {
+        font-size: 1.75rem;
+      }
+
+      .problem-section .problem-subhead {
+        margin-bottom: 3rem;
+      }
+
+      .problem-stats {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .problem-stat {
+        min-width: 0;
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .problem-stat-value {
+        font-size: 1.75rem;
+      }
+
       .feature-cards {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -509,9 +819,9 @@
       }
 
       .three-ways-row .grey-box {
-        width: 100%;
-        height: 60vh;
-        max-height: 400px;
+        width: min(100%, 60vh);
+        aspect-ratio: 1 / 1;
+        height: auto;
       }
 
       .three-ways-row .row-content h3 {
@@ -536,13 +846,31 @@
       .hero-cta .btn-standalone {
         width: 100%;
       }
+
+      .pricing-section {
+        padding: 4rem 1.5rem;
+      }
+
+      .pricing-section h2 {
+        font-size: 2rem;
+      }
+
+      .pricing-section .pricing-subtitle {
+        margin-bottom: 2rem;
+      }
+
+      .pricing-cards {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
     }
   </style>
 </head>
 <body>
 
+  <!-- Section 1: Fixed + simultaneously scrolling experience -->
   <!-- Left: Scrollable text sections -->
-  <div class="content" id="content">
+  <div class="content" id="content" data-section="1">
     <div class="section" data-index="0">
       <h2>B2B Customer Support, solved.</h2>
       <p class="hero-tagline">Instant replies instead of endless search,<br>to answer any customer request in detail.</p>
@@ -568,8 +896,31 @@
     </div>
   </div>
 
+  <!-- Section 2: The problem -->
+  <div class="problem-section" id="problemSection" data-section="2">
+    <span class="problem-label">The problem</span>
+    <h2 class="problem-heading">Engineers spend 4–6 hours a week on emails. They shouldn't.</h2>
+    <p class="problem-subhead">Triaging support requests and digging through docs is like a second job. RunMachine helps by answering any customer request in detail—instantly. One forward, and the machine finds the answer.</p>
+    <div class="problem-stats">
+      <div class="problem-stat">
+        <div class="problem-stat-value">4–6 hrs</div>
+        <div class="problem-stat-desc">Spent per week on support emails</div>
+      </div>
+      <div class="problem-stat">
+        <div class="problem-stat-value">80%</div>
+        <div class="problem-stat-desc">Is spent on gathering differing data across sources</div>
+      </div>
+      <div class="problem-stat">
+        <div class="problem-stat-value">3+ sources</div>
+        <div class="problem-stat-desc">Searched to find the right answer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Get to know runMachine -->
   <!-- Full-width section that appears after both columns scroll out -->
-  <div class="full-width-section" id="fullWidthSection">
+  <div class="full-width-section" id="fullWidthSection" data-section="3">
+    <span class="section-label">The solution</span>
     <h2>Get to know runMachine</h2>
     <div class="feature-cards">
       <div class="feature-card">
@@ -591,13 +942,19 @@
     </div>
   </div>
 
+  <!-- Section 4: Three ways we save you time -->
   <!-- Three Ways Section -->
-  <div class="three-ways-section" id="threeWaysSection">
-    <h2>Three ways we save you both time.</h2>
+  <div class="three-ways-section" id="threeWaysSection" data-section="4">
+    <span class="section-label">Support done in the blink of an eye</span>
+    <h2>Three ways we save you time.</h2>
     <div class="three-ways-container">
       <div class="three-ways-row">
         <div class="grey-box">
-          <!-- Image placeholder for Gmail, Teams, etc. -->
+          <div class="section-slideshow" aria-label="Slack, Gmail, and Teams integrations">
+            <img class="slide-img" src="assets/Section%20gmail.png" alt="Gmail" />
+            <img class="slide-img" src="assets/Section%20Teams.png" alt="Teams" />
+            <img class="slide-img" src="assets/Section%20Slack.png" alt="Slack" />
+          </div>
         </div>
         <div class="row-content">
           <h3>AI built into every channel</h3>
@@ -606,7 +963,7 @@
       </div>
       <div class="three-ways-row">
         <div class="grey-box">
-          <!-- Image placeholder -->
+          <img src="assets/Section%20ticket.png" alt="Workflows for any task" class="section-static-img" />
         </div>
         <div class="row-content">
           <h3>Workflows for any task</h3>
@@ -615,12 +972,44 @@
       </div>
       <div class="three-ways-row">
         <div class="grey-box">
-          <!-- Image placeholder -->
+          <img src="assets/Section%20aggregate.png" alt="Understand your customers" class="section-static-img" />
         </div>
         <div class="row-content">
           <h3>Understand your customers</h3>
           <p>Turn every request into insight. Ask the machine what matters.</p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div class="pricing-section" id="pricingSection" data-section="5">
+    <h2>Pricing</h2>
+    <p class="pricing-subtitle">Get started with Self host for free. No credit card required.</p>
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <h3>Hobby</h3>
+        <p class="pricing-desc">Get started, no credit card required. Great for hobby projects and POCs.</p>
+        <div class="pricing-amount">Self host</div>
+        <a href="#" class="btn-pricing">Get started</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Core</h3>
+        <p class="pricing-desc">For production projects. Longer data retention and unlimited users.</p>
+        <div class="pricing-amount">$59 <span class="period">/ month per seat</span></div>
+        <a href="#" class="btn-pricing btn-primary">Sign up</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Pro</h3>
+        <p class="pricing-desc">For scaling projects. Unlimited history, high rate limits, all features.</p>
+        <div class="pricing-amount">$89 <span class="period">/ month per seat</span></div>
+        <a href="#" class="btn-pricing btn-primary">Sign up</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Enterprise</h3>
+        <p class="pricing-desc">For large-scale teams. Enterprise-grade support and security.</p>
+        <div class="pricing-amount">Talk to sales</div>
+        <a href="#" class="btn-pricing">We're just a click away :)</a>
       </div>
     </div>
   </div>
