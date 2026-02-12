@@ -132,13 +132,8 @@
     .hero-cta .btn-standalone {
       border-radius: 12px;
     }
-    .hero-signup-message {
-      width: 100%;
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-    }
-    .hero-signup-message.success { color: #0a0; }
-    .hero-signup-message.error { color: #c00; }
+    .input-group.success input::placeholder { color: #0a0; }
+    .input-group.error input::placeholder { color: #c00; }
 
     /* Right column — fixed visual stage, right 50% of viewport */
     .visual-stage {
@@ -886,12 +881,11 @@
       <h2 class="hero-title">B2B Customer Support, solved.</h2>
       <p class="hero-tagline">Instant replies instead of endless search,<br>to answer any customer request in detail.</p>
       <form id="hero-signup-form" class="hero-cta" novalidate>
-        <div class="input-group">
+        <div id="hero-input-group" class="input-group">
           <input id="hero-email" type="email" name="email" placeholder="Enter your email" aria-label="Email address" required />
           <button type="submit" class="btn btn-inline">Get started</button>
         </div>
         <!-- <button type="button" class="btn btn-standalone">Talk to sales</button> -->
-        <p id="hero-signup-message" class="hero-signup-message" aria-live="polite" hidden></p>
       </form>
     </div>
     <div class="section" data-index="1">
@@ -1120,22 +1114,48 @@
 
   <script>
     (() => {
-      // Hero email signup: POST to /api/subscribe, show message
+      // Hero email signup: show success/error in input placeholder, reset after 5s
+      const HERO_PLACEHOLDER = 'Enter your email';
       const heroForm = document.getElementById('hero-signup-form');
-      const heroMessage = document.getElementById('hero-signup-message');
-      if (heroForm && heroMessage) {
+      const heroInput = document.getElementById('hero-email');
+      const heroInputGroup = document.getElementById('hero-input-group');
+      let heroResetTimer = null;
+
+      function resetHeroInput() {
+        if (heroResetTimer) clearTimeout(heroResetTimer);
+        heroResetTimer = null;
+        if (heroInput) {
+          heroInput.placeholder = HERO_PLACEHOLDER;
+          heroInput.value = '';
+        }
+        if (heroInputGroup) {
+          heroInputGroup.classList.remove('success', 'error');
+        }
+        const btn = heroForm && heroForm.querySelector('button[type="submit"]');
+        if (btn) { btn.disabled = false; btn.textContent = 'Get started'; }
+      }
+
+      function showMessageInInput(message, isSuccess) {
+        if (heroInput) {
+          heroInput.value = '';
+          heroInput.placeholder = message;
+        }
+        if (heroInputGroup) {
+          heroInputGroup.classList.remove('success', 'error');
+          heroInputGroup.classList.add(isSuccess ? 'success' : 'error');
+        }
+        if (heroResetTimer) clearTimeout(heroResetTimer);
+        heroResetTimer = setTimeout(resetHeroInput, 5000);
+      }
+
+      if (heroForm && heroInput && heroInputGroup) {
         heroForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const input = document.getElementById('hero-email');
-          const email = (input && input.value && input.value.trim()) || '';
+          const email = (heroInput.value && heroInput.value.trim()) || '';
           if (!email) {
-            heroMessage.textContent = 'Please enter your email.';
-            heroMessage.className = 'hero-signup-message error';
-            heroMessage.hidden = false;
+            showMessageInInput('Please enter your email.', false);
             return;
           }
-          heroMessage.hidden = true;
-          heroMessage.textContent = '';
           const btn = heroForm.querySelector('button[type="submit"]');
           if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
           try {
@@ -1146,18 +1166,13 @@
             });
             const data = await res.json().catch(() => ({}));
             if (res.ok && data.success) {
-              heroMessage.textContent = 'Thanks! We\'ll be in touch.';
-              heroMessage.className = 'hero-signup-message success';
-              if (input) input.value = '';
+              showMessageInInput('Thanks! We\'ll be in touch.', true);
             } else {
-              heroMessage.textContent = data.error || 'Something went wrong. Please try again.';
-              heroMessage.className = 'hero-signup-message error';
+              showMessageInInput(data.error || 'Something went wrong. Please try again.', false);
             }
           } catch {
-            heroMessage.textContent = 'Something went wrong. Please try again.';
-            heroMessage.className = 'hero-signup-message error';
+            showMessageInInput('Something went wrong. Please try again.', false);
           }
-          heroMessage.hidden = false;
           if (btn) { btn.disabled = false; btn.textContent = 'Get started'; }
         });
       }
