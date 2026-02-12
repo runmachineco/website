@@ -223,13 +223,17 @@
     .hero-logos-flow .logo-delay-10 { animation-delay: -6.5s; }
     .hero-logos-flow .logo-delay-11 { animation-delay: -8s; }
 
-    /* Right column — fixed visual stage, right 50% of viewport */
+    /* Right column — fixed visual stage: always a square (same size on every device/resize) */
+    /* Centered vertically in viewport, centered horizontally within the right 50% */
     .visual-stage {
       position: fixed;
-      top: 0;
-      right: 0;
-      width: 50%;
-      height: 100vh;
+      /* Center vertically */
+      top: 50%;
+      /* Center horizontally within the right 50% of screen: right 50% midpoint = 75% from left = 25% from right */
+      right: 25%;
+      transform: translate(50%, -50%);
+      width: min(50vw, 100vh);
+      height: min(50vw, 100vh);
       overflow: hidden;
       background: #fff;
       will-change: transform, opacity;
@@ -249,9 +253,9 @@
 
     .stage-logos-flow img {
       position: absolute;
-      height: 56px;
+      height: 10%;
       width: auto;
-      max-width: 72px;
+      max-width: 18%;
       object-fit: contain;
       opacity: 1;
       transform: translateY(-50%);
@@ -324,9 +328,9 @@
 
     .stage-logos-flow-right img {
       position: absolute;
-      height: 56px;
+      height: 10%;
       width: auto;
-      max-width: 72px;
+      max-width: 18%;
       object-fit: contain;
       opacity: 1;
       transform: translateY(-50%);
@@ -965,21 +969,40 @@
       color: #111;
     }
 
+    /* Mobile top background - hidden by default, shown on mobile */
+    .mobile-top-bg {
+      display: none;
+    }
+
     /* ── Mobile layout: stacked ── */
     @media (max-width: 768px) {
       .content {
         width: 100%;
-        margin-top: 40vh;
+        margin-top: 50vh;
       }
 
       .visual-stage {
         position: fixed;
         top: 0;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: 50vh;
+        height: 50vh;
+        z-index: 10;
+      }
+
+      /* White background covering full width in front of content */
+      .mobile-top-bg {
+        display: block;
+        position: fixed;
+        top: 0;
         left: 0;
         right: 0;
-        width: 100%;
-        height: 40vh;
-        z-index: 10;
+        height: 50vh;
+        background: #fff;
+        z-index: 9;
+        will-change: transform;
       }
 
       .section {
@@ -997,8 +1020,10 @@
       }
 
       .hero-logos-box {
+        width: min(100%, 60vh);
+        aspect-ratio: 1 / 1;
+        height: auto;
         max-width: 100%;
-        height: 320px;
         margin-top: 1.25rem;
       }
 
@@ -1116,6 +1141,9 @@
   </style>
 </head>
 <body>
+
+  <!-- Mobile: white background covering top 50vh -->
+  <div class="mobile-top-bg"></div>
 
   <!-- Section 1: Fixed + simultaneously scrolling experience -->
   <!-- Left: Scrollable text sections -->
@@ -1494,14 +1522,25 @@
       function smoothstep(v) { return v * v * (3 - 2 * v); }
 
       // Helper: get how far a section has scrolled through the viewport
-      // Returns 0 when section top aligns with viewport top,
-      //         1 when section has fully scrolled out the top
+      // Returns 0 when section top aligns with viewport top (or bottom 50vh on mobile),
+      //         1 when section has fully scrolled out the top (or top of bottom 50vh on mobile)
       function sectionProgress(section) {
         const rect = section.getBoundingClientRect();
         const vh = window.innerHeight;
-        // progress = how far the section top has moved above viewport top,
-        // normalized by section height
-        return clamp01(-rect.top / rect.height);
+        const isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+          // On mobile, the visible text area is the bottom 50vh (from 50vh to 100vh)
+          // So we measure progress relative to the 50vh mark instead of 0
+          const visibleTop = vh * 0.5; // The top of the visible text area
+          // progress = how far the section top has moved above the 50vh line,
+          // normalized by section height
+          return clamp01((visibleTop - rect.top) / rect.height);
+        } else {
+          // Desktop: progress = how far the section top has moved above viewport top,
+          // normalized by section height
+          return clamp01(-rect.top / rect.height);
+        }
       }
 
       // Helper: map a value from [inMin, inMax] to [0, 1]
@@ -1702,11 +1741,22 @@
         const s5progress = sectionProgress(sections[4]);
         const visualStage = document.getElementById('visual-stage');
         const content = document.getElementById('content');
+        const mobileTopBg = document.querySelector('.mobile-top-bg');
+        const isMobile = window.innerWidth <= 768;
         
         if (s5progress > 0) {
           // Both columns scroll up together
           const scrollOutAmount = s5progress * 100; // 0 to 100vh
-          visualStage.style.transform = `translateY(-${scrollOutAmount}vh)`;
+          // Preserve base centering transform while adding scroll-out
+          if (isMobile) {
+            visualStage.style.transform = `translateX(-50%) translateY(-${scrollOutAmount}vh)`;
+            // Also scroll out the mobile white background
+            if (mobileTopBg) {
+              mobileTopBg.style.transform = `translateY(-${scrollOutAmount}vh)`;
+            }
+          } else {
+            visualStage.style.transform = `translate(50%, -50%) translateY(-${scrollOutAmount}vh)`;
+          }
           visualStage.style.opacity = 1 - (s5progress * 0.3); // Slight fade
           
           // Fade out overlay2 as we scroll out; emailsend2 stays visible
@@ -1715,8 +1765,15 @@
             overlay2.style.opacity = Math.max(0, 1 - fadeOut);
           }
         } else {
-          // Reset when scrolling back up
-          visualStage.style.transform = 'translateY(0)';
+          // Reset when scrolling back up - restore base centering transform
+          if (isMobile) {
+            visualStage.style.transform = 'translateX(-50%)';
+            if (mobileTopBg) {
+              mobileTopBg.style.transform = 'translateY(0)';
+            }
+          } else {
+            visualStage.style.transform = 'translate(50%, -50%)';
+          }
           visualStage.style.opacity = 1;
         }
       }
@@ -1731,6 +1788,11 @@
           });
           ticking = true;
         }
+      });
+
+      // Handle resize: reset transform to match current breakpoint
+      window.addEventListener('resize', () => {
+        updateScene();
       });
 
       // Initial state
