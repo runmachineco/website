@@ -135,6 +135,94 @@
     .input-group.success input::placeholder { color: #0a0; }
     .input-group.error input::placeholder { color: #c00; }
 
+    /* Hero logos flow: box centered in hero, logos float left → center (endless loop) */
+    .hero-logos-box {
+      width: 100%;
+      max-width: 520px;
+      height: 480px;
+      margin: 1.75rem auto 0;
+      border-radius: 12px;
+      border: 1px solid #e8e8e8;
+      background: #fafafa;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-logos-flow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hero-logos-flow img {
+      position: absolute;
+      height: 56px;
+      width: auto;
+      max-width: 72px;
+      object-fit: contain;
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+
+    /* Triangular route: wide on left, converge to center point on right (collision off-frame) */
+    @keyframes hero-logo-float-1 {
+      0%   { left: -18%; top: 5%; }
+      100% { left: 108%; top: 50%; }
+    }
+    @keyframes hero-logo-float-2 {
+      0%   { left: -18%; top: 18%; }
+      100% { left: 108%; top: 50%; }
+    }
+    @keyframes hero-logo-float-3 {
+      0%   { left: -18%; top: 35%; }
+      100% { left: 108%; top: 50%; }
+    }
+    @keyframes hero-logo-float-4 {
+      0%   { left: -18%; top: 65%; }
+      100% { left: 108%; top: 50%; }
+    }
+    @keyframes hero-logo-float-5 {
+      0%   { left: -18%; top: 82%; }
+      100% { left: 108%; top: 50%; }
+    }
+    @keyframes hero-logo-float-6 {
+      0%   { left: -18%; top: 95%; }
+      100% { left: 108%; top: 50%; }
+    }
+
+    /* Double speed again: 3.5s, 4.5s, 5.5s, 3s, 5s, 4s */
+    .hero-logos-flow .logo-speed-1 { animation-duration: 3.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .hero-logos-flow .logo-speed-2 { animation-duration: 4.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .hero-logos-flow .logo-speed-3 { animation-duration: 5.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .hero-logos-flow .logo-speed-4 { animation-duration: 3s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .hero-logos-flow .logo-speed-5 { animation-duration: 5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .hero-logos-flow .logo-speed-6 { animation-duration: 4s; animation-timing-function: linear; animation-iteration-count: infinite; }
+
+    /* Route: which triangular path (wide left → center on right) */
+    .hero-logos-flow .logo-route-1 { animation-name: hero-logo-float-1; }
+    .hero-logos-flow .logo-route-2 { animation-name: hero-logo-float-2; }
+    .hero-logos-flow .logo-route-3 { animation-name: hero-logo-float-3; }
+    .hero-logos-flow .logo-route-4 { animation-name: hero-logo-float-4; }
+    .hero-logos-flow .logo-route-5 { animation-name: hero-logo-float-5; }
+    .hero-logos-flow .logo-route-6 { animation-name: hero-logo-float-6; }
+
+    /* Stagger delays so they don't all start together */
+    .hero-logos-flow .logo-delay-0  { animation-delay: 0s; }
+    .hero-logos-flow .logo-delay-1  { animation-delay: -1.5s; }
+    .hero-logos-flow .logo-delay-2  { animation-delay: -3s; }
+    .hero-logos-flow .logo-delay-3  { animation-delay: -4.5s; }
+    .hero-logos-flow .logo-delay-4  { animation-delay: -6s; }
+    .hero-logos-flow .logo-delay-5  { animation-delay: -7.5s; }
+    .hero-logos-flow .logo-delay-6  { animation-delay: -9s; }
+    .hero-logos-flow .logo-delay-7  { animation-delay: -0.5s; }
+    .hero-logos-flow .logo-delay-8  { animation-delay: -2s; }
+    .hero-logos-flow .logo-delay-9  { animation-delay: -5s; }
+    .hero-logos-flow .logo-delay-10 { animation-delay: -6.5s; }
+    .hero-logos-flow .logo-delay-11 { animation-delay: -8s; }
+
     /* Right column — fixed visual stage, right 50% of viewport */
     .visual-stage {
       position: fixed;
@@ -146,6 +234,150 @@
       background: #fff;
       will-change: transform, opacity;
     }
+
+    /* Floating logos: in front of grey box, behind frame 2xx; left edge of grey box, collide at 1/4 from left */
+    .stage-logos-flow {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 80%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .stage-logos-flow img {
+      position: absolute;
+      height: 56px;
+      width: auto;
+      max-width: 72px;
+      object-fit: contain;
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+
+    /* Left flow: each logo has fixed spawn Y (random-looking spread); converge at 1/4 from left; tilt + rotate over journey */
+    /* Collision point at same height as carousel; spawn heights match right flow (12, 58, 7, 43, 82, 25, 91, 34, 67, 19, 76, 52) */
+    @keyframes stage-logo-float-left-1 { 0% { left: -12%; top: 12%; transform: translateY(-50%) rotate(-9deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(6deg); } }
+    @keyframes stage-logo-float-left-2 { 0% { left: -12%; top: 58%; transform: translateY(-50%) rotate(4deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(-8deg); } }
+    @keyframes stage-logo-float-left-3 { 0% { left: -12%; top: 7%; transform: translateY(-50%) rotate(-6deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(7deg); } }
+    @keyframes stage-logo-float-left-4 { 0% { left: -12%; top: 43%; transform: translateY(-50%) rotate(7deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(-5deg); } }
+    @keyframes stage-logo-float-left-5 { 0% { left: -12%; top: 82%; transform: translateY(-50%) rotate(-9deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(6deg); } }
+    @keyframes stage-logo-float-left-6 { 0% { left: -12%; top: 25%; transform: translateY(-50%) rotate(4deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(-8deg); } }
+    @keyframes stage-logo-float-left-7 { 0% { left: -12%; top: 91%; transform: translateY(-50%) rotate(-6deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(7deg); } }
+    @keyframes stage-logo-float-left-8 { 0% { left: -12%; top: 34%; transform: translateY(-50%) rotate(7deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(-5deg); } }
+    @keyframes stage-logo-float-left-9 { 0% { left: -12%; top: 67%; transform: translateY(-50%) rotate(-9deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(6deg); } }
+    @keyframes stage-logo-float-left-10 { 0% { left: -12%; top: 19%; transform: translateY(-50%) rotate(4deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(-8deg); } }
+    @keyframes stage-logo-float-left-11 { 0% { left: -12%; top: 76%; transform: translateY(-50%) rotate(-6deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(7deg); } }
+    @keyframes stage-logo-float-left-12 { 0% { left: -12%; top: 52%; transform: translateY(-50%) rotate(7deg); } 100% { left: 25%; top: 72.5%; transform: translateY(-50%) rotate(-5deg); } }
+
+    .stage-logos-flow .logo-speed-1 { animation-duration: 3.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow .logo-speed-2 { animation-duration: 4.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow .logo-speed-3 { animation-duration: 5.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow .logo-speed-4 { animation-duration: 3s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow .logo-speed-5 { animation-duration: 5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow .logo-speed-6 { animation-duration: 4s; animation-timing-function: linear; animation-iteration-count: infinite; }
+
+    .stage-logos-flow .logo-spawn-1 { animation-name: stage-logo-float-left-1; }
+    .stage-logos-flow .logo-spawn-2 { animation-name: stage-logo-float-left-2; }
+    .stage-logos-flow .logo-spawn-3 { animation-name: stage-logo-float-left-3; }
+    .stage-logos-flow .logo-spawn-4 { animation-name: stage-logo-float-left-4; }
+    .stage-logos-flow .logo-spawn-5 { animation-name: stage-logo-float-left-5; }
+    .stage-logos-flow .logo-spawn-6 { animation-name: stage-logo-float-left-6; }
+    .stage-logos-flow .logo-spawn-7 { animation-name: stage-logo-float-left-7; }
+    .stage-logos-flow .logo-spawn-8 { animation-name: stage-logo-float-left-8; }
+    .stage-logos-flow .logo-spawn-9 { animation-name: stage-logo-float-left-9; }
+    .stage-logos-flow .logo-spawn-10 { animation-name: stage-logo-float-left-10; }
+    .stage-logos-flow .logo-spawn-11 { animation-name: stage-logo-float-left-11; }
+    .stage-logos-flow .logo-spawn-12 { animation-name: stage-logo-float-left-12; }
+
+    .stage-logos-flow .logo-delay-0  { animation-delay: 0s; }
+    .stage-logos-flow .logo-delay-1  { animation-delay: -1.5s; }
+    .stage-logos-flow .logo-delay-2  { animation-delay: -3s; }
+    .stage-logos-flow .logo-delay-3  { animation-delay: -4.5s; }
+    .stage-logos-flow .logo-delay-4  { animation-delay: -6s; }
+    .stage-logos-flow .logo-delay-5  { animation-delay: -7.5s; }
+    .stage-logos-flow .logo-delay-6  { animation-delay: -9s; }
+    .stage-logos-flow .logo-delay-7  { animation-delay: -0.5s; }
+    .stage-logos-flow .logo-delay-8  { animation-delay: -2s; }
+    .stage-logos-flow .logo-delay-9  { animation-delay: -5s; }
+    .stage-logos-flow .logo-delay-10 { animation-delay: -6.5s; }
+    .stage-logos-flow .logo-delay-11 { animation-delay: -8s; }
+
+    /* Right flow: wide on right, converge at 3/4 from left (mirror of left) */
+    .stage-logos-flow-right {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 80%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 0.5s fade when floating logos appear/disappear */
+    .stage-floating-logos {
+      transition: opacity 0.5s ease;
+    }
+
+    .stage-logos-flow-right img {
+      position: absolute;
+      height: 56px;
+      width: auto;
+      max-width: 72px;
+      object-fit: contain;
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+
+    /* Right flow: each logo has fixed spawn Y (random-looking spread); converge at 3/4 from left */
+    @keyframes stage-logo-float-right-1 { 0% { left: 112%; top: 12%; transform: translateY(-50%) rotate(8deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(-7deg); } }
+    @keyframes stage-logo-float-right-2 { 0% { left: 112%; top: 58%; transform: translateY(-50%) rotate(-5deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(6deg); } }
+    @keyframes stage-logo-float-right-3 { 0% { left: 112%; top: 7%; transform: translateY(-50%) rotate(9deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(-4deg); } }
+    @keyframes stage-logo-float-right-4 { 0% { left: 112%; top: 43%; transform: translateY(-50%) rotate(-8deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(5deg); } }
+    @keyframes stage-logo-float-right-5 { 0% { left: 112%; top: 82%; transform: translateY(-50%) rotate(4deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(-9deg); } }
+    @keyframes stage-logo-float-right-6 { 0% { left: 112%; top: 25%; transform: translateY(-50%) rotate(-10deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(3deg); } }
+    @keyframes stage-logo-float-right-7 { 0% { left: 112%; top: 91%; transform: translateY(-50%) rotate(8deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(-7deg); } }
+    @keyframes stage-logo-float-right-8 { 0% { left: 112%; top: 34%; transform: translateY(-50%) rotate(-5deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(6deg); } }
+    @keyframes stage-logo-float-right-9 { 0% { left: 112%; top: 67%; transform: translateY(-50%) rotate(9deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(-4deg); } }
+    @keyframes stage-logo-float-right-10 { 0% { left: 112%; top: 19%; transform: translateY(-50%) rotate(-8deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(5deg); } }
+    @keyframes stage-logo-float-right-11 { 0% { left: 112%; top: 76%; transform: translateY(-50%) rotate(4deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(-9deg); } }
+    @keyframes stage-logo-float-right-12 { 0% { left: 112%; top: 52%; transform: translateY(-50%) rotate(-10deg); } 100% { left: 68%; top: 72.5%; transform: translateY(-50%) rotate(3deg); } }
+
+    .stage-logos-flow-right .logo-speed-1 { animation-duration: 3.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow-right .logo-speed-2 { animation-duration: 4.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow-right .logo-speed-3 { animation-duration: 5.5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow-right .logo-speed-4 { animation-duration: 3s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow-right .logo-speed-5 { animation-duration: 5s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    .stage-logos-flow-right .logo-speed-6 { animation-duration: 4s; animation-timing-function: linear; animation-iteration-count: infinite; }
+
+    .stage-logos-flow-right .logo-spawn-1 { animation-name: stage-logo-float-right-1; }
+    .stage-logos-flow-right .logo-spawn-2 { animation-name: stage-logo-float-right-2; }
+    .stage-logos-flow-right .logo-spawn-3 { animation-name: stage-logo-float-right-3; }
+    .stage-logos-flow-right .logo-spawn-4 { animation-name: stage-logo-float-right-4; }
+    .stage-logos-flow-right .logo-spawn-5 { animation-name: stage-logo-float-right-5; }
+    .stage-logos-flow-right .logo-spawn-6 { animation-name: stage-logo-float-right-6; }
+    .stage-logos-flow-right .logo-spawn-7 { animation-name: stage-logo-float-right-7; }
+    .stage-logos-flow-right .logo-spawn-8 { animation-name: stage-logo-float-right-8; }
+    .stage-logos-flow-right .logo-spawn-9 { animation-name: stage-logo-float-right-9; }
+    .stage-logos-flow-right .logo-spawn-10 { animation-name: stage-logo-float-right-10; }
+    .stage-logos-flow-right .logo-spawn-11 { animation-name: stage-logo-float-right-11; }
+    .stage-logos-flow-right .logo-spawn-12 { animation-name: stage-logo-float-right-12; }
+
+    .stage-logos-flow-right .logo-delay-0  { animation-delay: 0s; }
+    .stage-logos-flow-right .logo-delay-1  { animation-delay: -1.5s; }
+    .stage-logos-flow-right .logo-delay-2  { animation-delay: -3s; }
+    .stage-logos-flow-right .logo-delay-3  { animation-delay: -4.5s; }
+    .stage-logos-flow-right .logo-delay-4  { animation-delay: -6s; }
+    .stage-logos-flow-right .logo-delay-5  { animation-delay: -7.5s; }
+    .stage-logos-flow-right .logo-delay-6  { animation-delay: -9s; }
+    .stage-logos-flow-right .logo-delay-7  { animation-delay: -0.5s; }
+    .stage-logos-flow-right .logo-delay-8  { animation-delay: -2s; }
+    .stage-logos-flow-right .logo-delay-9  { animation-delay: -5s; }
+    .stage-logos-flow-right .logo-delay-10 { animation-delay: -6.5s; }
+    .stage-logos-flow-right .logo-delay-11 { animation-delay: -8s; }
 
     /* All layers stacked absolutely, inset 10% from all edges */
     /* Exclude images inside containers */
@@ -315,15 +547,15 @@
       animation: logos-scroll-left 22s linear infinite;
     }
 
-    /* Right strip: starts at 0, moves left by one set (25%), then resets seamlessly */
+    /* Right strip: 8 logos × 3 copies; scroll by one third for seamless loop */
     @keyframes logos-scroll-right {
       0% { transform: translateX(0); }
-      100% { transform: translateX(-25%); }
+      100% { transform: translateX(-33.333%); }
     }
 
-    /* Left strip: starts shifted left by one set (-25%), moves to 0, then resets seamlessly */
+    /* Left strip: starts shifted by one third, moves to 0, then resets seamlessly */
     @keyframes logos-scroll-left {
-      0% { transform: translateX(-25%); }
+      0% { transform: translateX(-33.333%); }
       100% { transform: translateX(0); }
     }
 
@@ -764,6 +996,17 @@
         font-size: 2.4rem;
       }
 
+      .hero-logos-box {
+        max-width: 100%;
+        height: 320px;
+        margin-top: 1.25rem;
+      }
+
+      .hero-logos-flow img {
+        height: 44px;
+        max-width: 56px;
+      }
+
       .full-width-section {
         padding: 3rem 1.5rem;
       }
@@ -892,7 +1135,7 @@
       <h2>You forward any request...</h2>
     </div>
     <div class="section" data-index="2">
-      <h2>...the Machine searches your data <span class="inline-logos" id="inlineLogos" aria-hidden="true"><img src="assets/logos/image%20258.png" alt="" /><img src="assets/logos/image%20259.png" alt="" /><img src="assets/logos/image%20260.png" alt="" /><img src="assets/logos/image%20261.png" alt="" /><img src="assets/logos/image%20262.png" alt="" /><img src="assets/logos/image%20263.png" alt="" /></span> and within seconds...</h2>
+      <h2>...the Machine searches your data <span class="inline-logos" id="inlineLogos" aria-hidden="true"><img src="assets/logos-outline/logo_claude.png" alt="" /><img src="assets/logos-outline/logo_confluence.png" alt="" /><img src="assets/logos-outline/logo_github.png" alt="" /><img src="assets/logos-outline/logo_hubspot.png" alt="" /><img src="assets/logos-outline/logo_notion.png" alt="" /><img src="assets/logos-outline/logo_overleaf.png" alt="" /><img src="assets/logos-outline/logo_posthog.png" alt="" /><img src="assets/logos-outline/logo_supabase.png" alt="" /></span> and within seconds...</h2>
     </div>
     <div class="section" data-index="3">
       <h2>...provides the answer, ready to send.</h2>
@@ -923,34 +1166,9 @@
     </div>
   </div>
 
-  <!-- Section 3: Get to know runMachine -->
-  <!-- Full-width section that appears after both columns scroll out -->
-  <div class="full-width-section" id="fullWidthSection" data-section="3">
-    <span class="section-label">The solution</span>
-    <h2>Get to know runMachine</h2>
-    <div class="feature-cards">
-      <div class="feature-card">
-        <h3>AI built into every channel</h3>
-        <p>Support customers across Slack, Gmail, Outlook, Microsoft Teams, and more.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Agents equipped with every skill</h3>
-        <p>Finds the facts, logs and data to answer any request. Reproduces bugs on the fly.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Workflows for any task</h3>
-        <p>Your machine can handle customer questions, create tickets and propose solutions.</p>
-      </div>
-      <div class="feature-card">
-        <h3>Understand your customers</h3>
-        <p>Collect all customer requests and ask the machine what is relevant.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 4: Three ways we save you time -->
+  <!-- Section 3: Three ways we save you time -->
   <!-- Three Ways Section -->
-  <div class="three-ways-section" id="threeWaysSection" data-section="4">
+  <div class="three-ways-section" id="threeWaysSection" data-section="3">
     <span class="section-label">Support done in the blink of an eye</span>
     <h2>Three ways we save you time.</h2>
     <div class="three-ways-container">
@@ -984,6 +1202,31 @@
           <h3>Understand your customers</h3>
           <p>Turn every request into insight. Ask the machine what matters.</p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Get to know runMachine -->
+  <!-- Full-width section that appears after both columns scroll out -->
+  <div class="full-width-section" id="fullWidthSection" data-section="4">
+    <span class="section-label">The solution</span>
+    <h2>Get to know runMachine</h2>
+    <div class="feature-cards">
+      <div class="feature-card">
+        <h3>AI built into every channel</h3>
+        <p>Support customers across Slack, Gmail, Outlook, Microsoft Teams, and more.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Agents equipped with every skill</h3>
+        <p>Finds the facts, logs and data to answer any request. Reproduces bugs on the fly.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Workflows for any task</h3>
+        <p>Your machine can handle customer questions, create tickets and propose solutions.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Understand your customers</h3>
+        <p>Collect all customer requests and ask the machine what is relevant.</p>
       </div>
     </div>
   </div>
@@ -1024,6 +1267,35 @@
   <div class="visual-stage" id="visual-stage">
     <!-- Constant background (always visible behind all scenes) -->
     <img class="frame-background" src="assets/Frame%20background.png" alt="Frame background" />
+    <!-- Floating logos: in front of grey box, behind frame 2xx; left edge → collide at 1/4 from left; fade out at 25% scroll -->
+    <div class="stage-logos-flow stage-floating-logos" aria-hidden="true">
+      <img src="assets/logos-outline/logo_claude.png" alt="" class="logo-spawn-1 logo-speed-1 logo-delay-0">
+      <img src="assets/logos-outline/logo_confluence.png" alt="" class="logo-spawn-2 logo-speed-2 logo-delay-1">
+      <img src="assets/logos-outline/logo_github.png" alt="" class="logo-spawn-3 logo-speed-3 logo-delay-2">
+      <img src="assets/logos-outline/logo_hubspot.png" alt="" class="logo-spawn-4 logo-speed-4 logo-delay-3">
+      <img src="assets/logos-outline/logo_notion.png" alt="" class="logo-spawn-5 logo-speed-5 logo-delay-4">
+      <img src="assets/logos-outline/logo_overleaf.png" alt="" class="logo-spawn-6 logo-speed-6 logo-delay-5">
+      <img src="assets/logos-outline/logo_posthog.png" alt="" class="logo-spawn-7 logo-speed-1 logo-delay-6">
+      <img src="assets/logos-outline/logo_supabase.png" alt="" class="logo-spawn-8 logo-speed-2 logo-delay-7">
+      <img src="assets/logos-outline/logo_claude.png" alt="" class="logo-spawn-9 logo-speed-3 logo-delay-8">
+      <img src="assets/logos-outline/logo_confluence.png" alt="" class="logo-spawn-10 logo-speed-4 logo-delay-9">
+      <img src="assets/logos-outline/logo_github.png" alt="" class="logo-spawn-11 logo-speed-5 logo-delay-10">
+      <img src="assets/logos-outline/logo_hubspot.png" alt="" class="logo-spawn-12 logo-speed-6 logo-delay-11">
+    </div>
+    <div class="stage-logos-flow-right stage-floating-logos" aria-hidden="true">
+      <img src="assets/logos-outline/logo_claude.png" alt="" class="logo-spawn-1 logo-speed-1 logo-delay-0">
+      <img src="assets/logos-outline/logo_confluence.png" alt="" class="logo-spawn-2 logo-speed-2 logo-delay-1">
+      <img src="assets/logos-outline/logo_github.png" alt="" class="logo-spawn-3 logo-speed-3 logo-delay-2">
+      <img src="assets/logos-outline/logo_hubspot.png" alt="" class="logo-spawn-4 logo-speed-4 logo-delay-3">
+      <img src="assets/logos-outline/logo_notion.png" alt="" class="logo-spawn-5 logo-speed-5 logo-delay-4">
+      <img src="assets/logos-outline/logo_overleaf.png" alt="" class="logo-spawn-6 logo-speed-6 logo-delay-5">
+      <img src="assets/logos-outline/logo_posthog.png" alt="" class="logo-spawn-7 logo-speed-1 logo-delay-6">
+      <img src="assets/logos-outline/logo_supabase.png" alt="" class="logo-spawn-8 logo-speed-2 logo-delay-7">
+      <img src="assets/logos-outline/logo_claude.png" alt="" class="logo-spawn-9 logo-speed-3 logo-delay-8">
+      <img src="assets/logos-outline/logo_confluence.png" alt="" class="logo-spawn-10 logo-speed-4 logo-delay-9">
+      <img src="assets/logos-outline/logo_github.png" alt="" class="logo-spawn-11 logo-speed-5 logo-delay-10">
+      <img src="assets/logos-outline/logo_hubspot.png" alt="" class="logo-spawn-12 logo-speed-6 logo-delay-11">
+    </div>
     <!-- Base layers -->
     <img id="frame247"     src="assets/Frame%20247.png"     alt="Frame 247" />
     <img id="frame248"     src="assets/Frame%20248.png"     alt="Frame 248" />
@@ -1036,65 +1308,66 @@
       <img class="clock-arm" src="assets/Frame%20clockarm.png"  alt="Clock arm" />
     </div>
     -->
-    <!-- Logos: two carousels meeting in center (left-bound scrolls right, right-bound scrolls left) -->
+    <!-- Logos carousel — COMMENTED OUT (floating logos used instead)
     <div id="logosCarousel" class="logos-carousel-container">
       <div class="logos-carousel-left">
         <div id="logosStripLeft" class="logos-strip logos-strip-left">
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_claude.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_confluence.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_github.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_hubspot.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_notion.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_overleaf.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_posthog.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_supabase.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_claude.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_confluence.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_github.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_hubspot.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_notion.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_overleaf.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_posthog.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_supabase.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_claude.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_confluence.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_github.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_hubspot.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_notion.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_overleaf.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_posthog.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_supabase.png" alt="Logo" />
         </div>
       </div>
       <div class="logos-carousel-right">
         <div id="logosStripRight" class="logos-strip logos-strip-right">
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
-          <img src="assets/logos/image%20258.png" alt="Logo" />
-          <img src="assets/logos/image%20259.png" alt="Logo" />
-          <img src="assets/logos/image%20260.png" alt="Logo" />
-          <img src="assets/logos/image%20261.png" alt="Logo" />
-          <img src="assets/logos/image%20262.png" alt="Logo" />
-          <img src="assets/logos/image%20263.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_claude.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_confluence.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_github.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_hubspot.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_notion.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_overleaf.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_posthog.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_supabase.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_claude.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_confluence.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_github.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_hubspot.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_notion.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_overleaf.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_posthog.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_supabase.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_claude.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_confluence.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_github.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_hubspot.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_notion.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_overleaf.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_posthog.png" alt="Logo" />
+          <img src="assets/logos-outline/logo_supabase.png" alt="Logo" />
         </div>
       </div>
     </div>
+    -->
     <!-- Touch gesture indicators -->
     <div id="touchIndicator" class="touch-indicator">
       <img src="assets/touch.png" alt="Touch gesture" />
@@ -1200,15 +1473,16 @@
       const overlay    = document.getElementById('overlay');
       const emailsend  = document.getElementById('emailsend');
       // const clockContainer = document.getElementById('clockContainer'); // clock commented out
-      const logosCarousel = document.getElementById('logosCarousel');
-      const logosStripLeft = document.getElementById('logosStripLeft');
-      const logosStripRight = document.getElementById('logosStripRight');
+      // Carousel commented out — const logosCarousel = document.getElementById('logosCarousel');
+      // const logosStripLeft = document.getElementById('logosStripLeft');
+      // const logosStripRight = document.getElementById('logosStripRight');
       const touchIndicator = document.getElementById('touchIndicator');
       const touchIndicator2 = document.getElementById('touchIndicator2');
       const touchIndicator3 = document.getElementById('touchIndicator3');
       const frame250   = document.getElementById('frame250');
       const overlay2   = document.getElementById('overlay2');
       const emailsend2 = document.getElementById('emailsend2');
+      const stageFloatingLogos = document.querySelectorAll('.stage-floating-logos');
 
       // Track if clock/logos animation has been triggered (clock commented out)
       let clockTriggered = false;
@@ -1237,12 +1511,25 @@
 
       function updateScene() {
         const s1progress = sectionProgress(sections[0]); // 0 = top, 1 = fully scrolled out
+        const s2progress = sectionProgress(sections[1]); // "You forward any request..."
+        const s3progress = sectionProgress(sections[2]); // "...the Machine searches your data..."
+
+        // Floating logos: fade out at 25% scroll from hero; show again when Section 3 (carousel) appears; hide when Section 3 fully scrolled out
+        let floatOpacity;
+        if (s1progress < 0.25) {
+          floatOpacity = 1 - smoothstep(remap(s1progress, 0, 0.25));
+        } else if (s2progress >= 1 && s3progress < 1) {
+          floatOpacity = 1; // visible until Section 3 is fully scrolled out
+        } else {
+          floatOpacity = 0;
+        }
+        stageFloatingLogos.forEach((el) => { el.style.opacity = floatOpacity; });
 
         // ─── Scene 1 → Scene 2 transition ───
         //
         // Phase 1: s1progress 0 → 0.5 (Section 1 scrolls to 50% out)
-        //   Frame 247: opacity 1 → 0
-        //   Frame 248: opacity 0 → 1
+        //   Frame 247: stays visible (background)
+        //   Frame 248: opacity 0 → 1 (appears in front of 247)
         //
         // Phase 2: s1progress 0.5 → 1.0 (Section 1 finishes, Section 2 fully revealed)
         //   Frame overlay:   opacity 0 → 1
@@ -1251,8 +1538,8 @@
         const phase1 = smoothstep(remap(s1progress, 0, 0.5));
         const phase2 = smoothstep(remap(s1progress, 0.5, 1.0));
 
-        // Frame 247: visible at start, fades out during phase 1
-        frame247.style.opacity = 1 - phase1;
+        // Frame 247: always visible as background (248 appears in front of it)
+        frame247.style.opacity = 1;
 
         // Frame 248: fades in during phase 1, stays visible through phase 2
         frame248.style.opacity = phase1;
@@ -1292,7 +1579,6 @@
         //   Overlay: fades out
         //   Emailsend: waits until s2progress 0.5, then slides back down (translateY 0% → 100%)
         //   Frame 247: fades back in as background
-        const s2progress = sectionProgress(sections[1]);
         if (s2progress > 0) {
           const exit = smoothstep(remap(s2progress, 0, 1.0));
 
@@ -1312,8 +1598,8 @@
             emailsend.style.opacity = 0;
           }
 
-          // Frame 247 fades back in as background for Scene 3
-          frame247.style.opacity = Math.max(parseFloat(frame247.style.opacity), exit);
+          // Frame 247 stays visible as background for Scene 3
+          frame247.style.opacity = 1;
 
           // Touch indicator 2: appears just before emailsend slides down
           // Phase 1 (0.3 to 0.4): grows from 50% to 100% size
@@ -1339,41 +1625,18 @@
         }
 
         // ─── Scene 3: logos fade-in trigger (clock commented out) ───
-        const s3progress = sectionProgress(sections[2]);
-        
         if (s2progress >= 1 && s3progress < 0.3 && !clockTriggered) {
           clockTriggered = true;
-          // clockContainer.style.transition = 'opacity 1000ms ease';
-          // clockContainer.style.opacity = 1;
-          if (logosCarousel) {
-            logosCarousel.style.transition = 'opacity 1000ms ease';
-            logosCarousel.style.opacity = 1;
-          }
-          if (logosStripLeft) logosStripLeft.style.animationPlayState = 'running';
-          if (logosStripRight) logosStripRight.style.animationPlayState = 'running';
+          // Carousel commented out — if (logosCarousel) { logosCarousel.style.opacity = 1; } etc.
         }
         
         // Hide when leaving Scene 3
         if (s3progress > 0.5) {
-          // clockContainer.style.transition = 'opacity 300ms ease';
-          // clockContainer.style.opacity = 0;
-          if (logosCarousel) {
-            logosCarousel.style.transition = 'opacity 300ms ease';
-            logosCarousel.style.opacity = 0;
-          }
-          if (logosStripLeft) logosStripLeft.style.animationPlayState = 'paused';
-          if (logosStripRight) logosStripRight.style.animationPlayState = 'paused';
           clockTriggered = false;
         }
         
         // Reset if scrolling back before Scene 3
         if (s2progress < 1) {
-          // clockContainer.style.opacity = 0;
-          if (logosCarousel) {
-            logosCarousel.style.opacity = 0;
-          }
-          if (logosStripLeft) logosStripLeft.style.animationPlayState = 'paused';
-          if (logosStripRight) logosStripRight.style.animationPlayState = 'paused';
           clockTriggered = false;
         }
 
@@ -1446,11 +1709,10 @@
           visualStage.style.transform = `translateY(-${scrollOutAmount}vh)`;
           visualStage.style.opacity = 1 - (s5progress * 0.3); // Slight fade
           
-          // Fade out email overlay elements as we scroll out
+          // Fade out overlay2 as we scroll out; emailsend2 stays visible
           if (s5progress > 0.5) {
             const fadeOut = (s5progress - 0.5) * 2; // 0 to 1 during second half
             overlay2.style.opacity = Math.max(0, 1 - fadeOut);
-            emailsend2.style.opacity = Math.max(0, 1 - fadeOut);
           }
         } else {
           // Reset when scrolling back up
