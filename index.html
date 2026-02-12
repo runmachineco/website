@@ -22,6 +22,58 @@
       background: #fff;
     }
 
+    /* ── Navigation Bar ── */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem 1.5rem;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .navbar-brand {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111;
+      text-decoration: none;
+    }
+
+    .navbar-cta {
+      font-family: 'Averia Serif Libre', serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.6rem 1.25rem;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      background: #000;
+      color: #fff;
+      white-space: nowrap;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .navbar-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Pulse animation for email input group */
+    @keyframes pulse-grow {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .input-group.pulse {
+      animation: pulse-grow 0.4s ease-in-out 1;
+    }
+
     /* ── Desktop layout ── */
 
     /* Left column — scrollable text, occupies left 50% */
@@ -56,7 +108,7 @@
 
     /* Hero first card heading */
     .hero-title {
-      font-size: 3.5rem;
+      font-size: 4.5rem;
     }
 
     /* Inline logo rotator after "data" — one visible img inline, no extra box */
@@ -80,7 +132,7 @@
     /* Hero tagline below heading */
     .hero-tagline {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.35rem;
       line-height: 1.5;
       margin-top: 1rem;
       color: #666;
@@ -113,6 +165,9 @@
     }
     .hero-cta input::placeholder {
       color: #777;
+    }
+    .hero-cta input:focus {
+      outline: none;
     }
     .hero-cta .btn {
       font-family: 'Averia Serif Libre', serif;
@@ -1016,7 +1071,7 @@
 
       /* Larger heading on first card for mobile */
       .hero-title {
-        font-size: 2.4rem;
+        font-size: 2.75rem;
       }
 
       .hero-logos-box {
@@ -1142,6 +1197,12 @@
 </head>
 <body>
 
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <span class="navbar-brand">runMachine</span>
+    <button class="navbar-cta" id="navbar-get-started">Get started</button>
+  </nav>
+
   <!-- Mobile: white background covering top 50vh -->
   <div class="mobile-top-bg"></div>
 
@@ -1150,7 +1211,7 @@
   <div class="content" id="content" data-section="1">
     <div class="section" data-index="0">
       <h2 class="hero-title">B2B Customer Support, solved.</h2>
-      <p class="hero-tagline">Instant replies instead of endless search,<br>to answer any customer request in detail.</p>
+      <p class="hero-tagline">runMachine creates drafts and tickets, grounded in facts from your sourcecode, logs, and databases.</p>
       <form id="hero-signup-form" class="hero-cta" novalidate>
         <div id="hero-input-group" class="input-group">
           <input id="hero-email" type="email" name="email" placeholder="Enter your email" aria-label="Email address" required />
@@ -1415,6 +1476,29 @@
 
   <script>
     (() => {
+      // Navbar "Get started" button: scroll to email input and pulse
+      const navbarGetStarted = document.getElementById('navbar-get-started');
+      const heroInputGroupForNav = document.getElementById('hero-input-group');
+      const heroEmailForNav = document.getElementById('hero-email');
+
+      if (navbarGetStarted && heroInputGroupForNav && heroEmailForNav) {
+        navbarGetStarted.addEventListener('click', () => {
+          // Scroll to the email input smoothly
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          
+          // Add pulse animation after scroll completes (approx 500ms)
+          setTimeout(() => {
+            heroInputGroupForNav.classList.add('pulse');
+            heroEmailForNav.focus();
+            
+            // Remove pulse class after animation completes
+            setTimeout(() => {
+              heroInputGroupForNav.classList.remove('pulse');
+            }, 400); // single pulse duration
+          }, 500);
+        });
+      }
+
       // Hero email signup: show success/error in input placeholder, reset after 5s
       const HERO_PLACEHOLDER = 'Enter your email';
       const heroForm = document.getElementById('hero-signup-form');
