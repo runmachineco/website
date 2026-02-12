@@ -63,6 +63,19 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
+    /* Mobile: hide navbar initially, show when scrolled to section 2 */
+    @media (max-width: 768px) {
+      .navbar {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .navbar.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+
     /* Pulse animation for email input group */
     @keyframes pulse-grow {
       0% { transform: scale(1); }
@@ -1563,6 +1576,7 @@
       }
 
       const sections = document.querySelectorAll('.section');
+      const navbar = document.querySelector('.navbar');
 
       // Inline logo rotator: 2 logos per second (500ms each)
       const inlineLogosEl = document.getElementById('inlineLogos');
@@ -1633,9 +1647,24 @@
       }
 
       function updateScene() {
+        const isMobile = window.innerWidth <= 768;
         const s1progress = sectionProgress(sections[0]); // 0 = top, 1 = fully scrolled out
         const s2progress = sectionProgress(sections[1]); // "You forward any request..."
         const s3progress = sectionProgress(sections[2]); // "...the Machine searches your data..."
+
+        // Mobile navbar: show when scrolled past section 1 (into problem section / section 2)
+        if (isMobile && navbar) {
+          const problemSection = document.getElementById('problemSection');
+          if (problemSection) {
+            const rect = problemSection.getBoundingClientRect();
+            // Show navbar when problem section top reaches viewport top
+            if (rect.top <= 0) {
+              navbar.classList.add('visible');
+            } else {
+              navbar.classList.remove('visible');
+            }
+          }
+        }
 
         // Floating logos: fade out at 25% scroll from hero; show again when Section 3 (carousel) appears; hide when Section 3 fully scrolled out
         let floatOpacity;
@@ -1826,7 +1855,6 @@
         const visualStage = document.getElementById('visual-stage');
         const content = document.getElementById('content');
         const mobileTopBg = document.querySelector('.mobile-top-bg');
-        const isMobile = window.innerWidth <= 768;
         
         if (s5progress > 0) {
           // Both columns scroll up together
