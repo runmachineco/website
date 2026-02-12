@@ -1042,6 +1042,45 @@
       display: none;
     }
 
+    /* ── Footer ── */
+    .site-footer {
+      background: #f9f9f9;
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid #eee;
+    }
+
+    .footer-brand {
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+      font-size: 0.9rem;
+      color: #666;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: #111;
+      text-decoration: underline;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: #999;
+    }
+
     /* ── Mobile layout: stacked ── */
     @media (max-width: 768px) {
       .content {
@@ -1364,6 +1403,16 @@
       </div>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-brand">runMachine</div>
+    <div class="footer-links">
+      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="/terms-of-service">Terms of Service</a>
+    </div>
+    <p class="footer-copy">&copy; 2025 RunMachine. All rights reserved.</p>
+  </footer>
 
   <!-- Right: Fixed image stage — layers stacked bottom to top -->
   <div class="visual-stage" id="visual-stage">
