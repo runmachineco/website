@@ -47,6 +47,31 @@
       text-decoration: none;
     }
 
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .navbar-download {
+      font-family: 'Averia Serif Libre', serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.6rem 1.25rem;
+      border: 1px solid #111;
+      border-radius: 10px;
+      background: #fff;
+      color: #111;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .navbar-download:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
     .navbar-cta {
       font-family: 'Averia Serif Libre', serif;
       font-weight: 700;
@@ -72,6 +97,18 @@
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
+        padding: 0.75rem 1rem 1rem;
+      }
+      .navbar-brand {
+        font-size: 1.2rem;
+      }
+      .navbar-actions {
+        gap: 0.5rem;
+      }
+      .navbar-download,
+      .navbar-cta {
+        font-size: 0.82rem;
+        padding: 0.45rem 0.7rem;
       }
       .navbar.visible {
         opacity: 1;
@@ -1255,7 +1292,15 @@
   <!-- Navigation Bar -->
   <nav class="navbar">
     <span class="navbar-brand">runMachine</span>
-    <button class="navbar-cta" id="navbar-get-started">Get started</button>
+    <div class="navbar-actions">
+      <a
+        class="navbar-download"
+        href="https://github.com/runmachineco/runConnector/actions/runs/22374170033/artifacts/5644581736"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Download Chrome plugin</a>
+      <button class="navbar-cta" id="navbar-get-started">Get started</button>
+    </div>
   </nav>
 
   <!-- Mobile: white background covering top 50vh -->
